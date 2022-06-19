@@ -1,4 +1,4 @@
-using CustomerTransactions.Repositories;
+using TripManager.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -13,7 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace CustomerTransactions
+namespace TripManager
 {
     public class Startup
     {
@@ -28,13 +28,15 @@ namespace CustomerTransactions
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<Context>();
-            services.AddScoped<ICustomerRepository, CustomerRepository>();
-            services.AddScoped<ITransactionRepository, TransactionRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<ITripRepository, TripRepository>();
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "CustomerTransactions", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Trip Manager", Version = "v1" });
             });
+            services.AddCors();
+            services.AddMvc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -44,10 +46,9 @@ namespace CustomerTransactions
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "CustomerTransactions v1"));
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "UserTransactions v1"));
             }
-
-            app.UseHttpsRedirection();
+            app.UseCors(options=>options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
             app.UseRouting();
 
